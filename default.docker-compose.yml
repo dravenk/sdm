@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  drupal:
+    container_name: ${APP_NAME}
+    image: ${APP_IMAGE}
+    networks:
+      - drupal
+    ports:
+      - "${APP_PORT}:80"
+    volumes:
+      - ./drupal:/opt/drupal
+      - ./drupal/web/sites/default/files:/opt/drupal/web/sites/default/files:rw
+      # - /opt/drupal/web/sites/default/files/css
+      # - /opt/drupal/web/sites/default/files/js
+      # - /opt/drupal/web/sites/default/files/php
+      # - /opt/drupal/web/sites/default/files/styles
+  drupal_mariadb:
+    image: mariadb:latest
+    container_name: ${APP_NAME}_mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MARIADB_PASS}
+    volumes:
+      - ./data:/var/lib/mysql
+    networks:
+      - drupal
+
+networks:
+  drupal:

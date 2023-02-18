@@ -1,0 +1,16 @@
+image: drupal:latest
+workdir: /opt/drupal
+
+mysql:
+  host: mariadb
+  port: 3306
+  user: root
+  pass: password
+
+log:
+  # 0 default. record all log.
+  # 1 ingore all log.
+  level: 0
+
+appsdir: apps
+appsname: [dp1, dp2, dp3]
