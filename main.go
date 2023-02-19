@@ -8,11 +8,15 @@ import (
 )
 
 var (
-	tplSettings = "default.settings.php"
-	tplCompose  = "default.docker-compose.yml"
+	tplSettings = "settings.php"
+	tplCompose  = "docker-compose.yml"
 )
 
 func init() {
+	initConfigFile()
+	initDockerComposefile()
+	initSettingsfile()
+
 	loadConf()
 	logln("----- start ------")
 }

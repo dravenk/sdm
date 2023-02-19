@@ -1,13 +1,46 @@
 package main
 
 import (
+	_ "embed"
 	"errors"
+	"io/ioutil"
 	"log"
 	"net"
 	"os"
 	"strconv"
 	"time"
 )
+
+// see https://pkg.go.dev/embed
+//go:embed default.config.yaml
+var configfile []byte
+
+func initConfigFile() {
+	filePath := "./config.yaml"
+	if isNotExist(filePath) {
+		ioutil.WriteFile(filePath, configfile, os.ModePerm)
+	}
+}
+
+//go:embed default.docker-compose.yml
+var dockerComposeFile []byte
+
+func initDockerComposefile() {
+	filePath := "./docker-compose.yml"
+	if isNotExist(filePath) {
+		ioutil.WriteFile(filePath, dockerComposeFile, os.ModePerm)
+	}
+}
+
+//go:embed default.settings.php
+var settingsFile []byte
+
+func initSettingsfile() {
+	filePath := "./settings.php"
+	if isNotExist(filePath) {
+		ioutil.WriteFile(filePath, settingsFile, os.ModePerm)
+	}
+}
 
 func writeFileln(dstFileName string, textSlice []string) {
 	f, err := os.OpenFile(dstFileName, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0755)
@@ -24,6 +57,11 @@ func writeFileln(dstFileName string, textSlice []string) {
 }
 
 func mkDir(dir string) {
+	if dir == "" {
+		return
+	}
+
+	logln("mkdir ", dir)
 	if err := os.Mkdir(dir, os.ModePerm); err != nil {
 		if !errors.Is(err, os.ErrExist) {
 			log.Fatal(err)
@@ -48,5 +86,15 @@ func portReady(port int) bool {
 		logln("Port available. ", port)
 		return true
 	}
+	return false
+}
+
+func isNotExist(filePath string) bool {
+	if _, err := os.Stat(filePath); err != nil {
+		if os.IsNotExist(err) {
+			return true
+		}
+	}
+	// THE FILE EXISTS
 	return false
 }

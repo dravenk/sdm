@@ -1,10 +1,12 @@
 package main
 
 import (
+	_ "embed"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
-	"os"
+	// "os"
+	// "errors"
 )
 
 // Config struct
@@ -35,14 +37,15 @@ type Config struct {
 var Conf Config
 
 func loadConf() {
-	data, err := ioutil.ReadFile("./config.yaml")
-	if err != nil {
-		log.Printf("file error: %v\n ", err)
-		os.Exit(1)
-	}
-	err = yaml.Unmarshal([]byte(data), &Conf)
-	if err != nil {
-		log.Fatalf("error: %v", err)
+	var data []byte
+	filePath := "./config.yaml"
+	if isNotExist(filePath) {
+		data = configfile
+	} else {
+		data, _ = ioutil.ReadFile("./config.yaml")
 	}
 
+	if err := yaml.Unmarshal([]byte(data), &Conf); err != nil {
+		log.Fatalf("Error: %v", err)
+	}
 }
