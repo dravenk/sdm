@@ -1,16 +1,22 @@
-image: drupal:latest
+image: dravenk/dp:10-fpm
+# image: drupal:latest
 workdir: /opt/drupal
 
 mysql:
-  host: mariadb
+  host: drupal_mariadb
   port: 3306
   user: root
-  pass: password
+  # pass: password
 
 log:
   # 0 default. record all log.
   # 1 ingore all log.
   level: 0
 
+appsname: [dp1, dp2]
+
+# e.g: apps, ../apps
 appsdir: apps
-appsname: [dp1, dp2, dp3]
+
+minport: 8000
+maxport: 8800
