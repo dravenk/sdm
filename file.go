@@ -12,6 +12,7 @@ import (
 )
 
 // see https://pkg.go.dev/embed
+//
 //go:embed default.config.yaml
 var configfile []byte
 
@@ -56,13 +57,13 @@ func writeFileln(dstFileName string, textSlice []string) {
 	}
 }
 
-func mkDir(dir string) {
+func mkDir(dir string, perm os.FileMode) {
 	if dir == "" {
 		return
 	}
 
 	logln("mkdir ", dir)
-	if err := os.Mkdir(dir, os.ModePerm); err != nil {
+	if err := os.Mkdir(dir, perm); err != nil {
 		if !errors.Is(err, os.ErrExist) {
 			log.Fatal(err)
 		}

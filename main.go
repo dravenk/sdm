@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -22,7 +23,7 @@ func init() {
 }
 
 func main() {
-	mkDir(Conf.Appsdir)
+	mkDir(Conf.Appsdir, os.ModePerm)
 
 	appsName := []string{"dp"}
 	if len(Conf.AppsName) > 0 {
@@ -43,7 +44,7 @@ func main() {
 	for i := 0; i < len(appsName); i++ {
 		appName := appsName[i]
 		appDir := Conf.Appsdir + "/" + appName
-		mkDir(appDir)
+		mkDir(appDir, os.ModePerm)
 		// generage db password for every app
 		Conf.MySQL.password = hashPass()
 
@@ -65,7 +66,7 @@ func main() {
 
 		// Create files directory
 		filesDir := appDir + "/drupal/web/sites/default/files"
-		mkDir(filesDir)
+		mkDir(filesDir, os.ModeSticky|os.ModePerm)
 
 		logln("Execute: cp -rf ", tplCompose, appDir)
 		exec.Command("cp", "-rf", tplCompose, appDir+"/docker-compose.yml").Run()
