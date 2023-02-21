@@ -1,12 +1,6 @@
-# github.com/containerd/containerd v1.6.18
-## explicit
 # github.com/google/uuid v1.3.0
 ## explicit
 github.com/google/uuid
-# github.com/urfave/cli/v2 v2.24.4
-## explicit
-# golang.org/x/crypto v0.6.0
-## explicit
 # gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3
