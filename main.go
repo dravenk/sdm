@@ -86,7 +86,7 @@ func initProjectFiles(appName, appDir, imgworkdir string) {
 
 	// Create files directory
 	filesDir := appDir + "/drupal/web/sites/default/files"
-	mkDir(filesDir, os.ModeSticky|os.ModePerm)
+	mkDir(filesDir, os.ModePerm)
 
 	logln("Execute: cp -rf ", tplCompose, appDir)
 	exec.Command("cp", "-rf", tplCompose, appDir+"/docker-compose.yml").Run()
