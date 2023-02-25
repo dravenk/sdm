@@ -7,9 +7,10 @@ import (
 )
 
 var (
-	InputUp   = "up"
-	InputInit = "init"
-	InputDown = "down"
+	InputUp     = "up"
+	InputInit   = "init"
+	InputDown   = "down"
+	InputRemove = "remove"
 )
 
 func defineCommand(d prompt.Document) []prompt.Suggest {
@@ -17,6 +18,7 @@ func defineCommand(d prompt.Document) []prompt.Suggest {
 		{Text: InputInit, Description: "Initialize configuration by default."},
 		{Text: InputUp, Description: "Excute docker-compose to create and start containers."},
 		{Text: InputDown, Description: "Excute docker-compose down to stop and remove containers, networks"},
+		{Text: InputRemove, Description: "Remove all applications files"},
 	}
 	return prompt.FilterHasPrefix(s, d.GetWordBeforeCursor(), true)
 }
@@ -35,6 +37,8 @@ func initCommand() string {
 		return InputUp
 	case InputDown:
 		return InputDown
+	case InputRemove:
+		return InputRemove
 	default:
 		return ""
 	}

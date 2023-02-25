@@ -67,7 +67,7 @@ func mkDir(dir string, perm os.FileMode) {
 	}
 
 	logln("mkdir ", dir)
-	if err := os.Mkdir(dir, perm); err != nil {
+	if err := os.MkdirAll(dir, perm); err != nil {
 		if !errors.Is(err, os.ErrExist) {
 			log.Fatal(err)
 		}

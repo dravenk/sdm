@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
@@ -22,8 +23,6 @@ func init() {
 
 func main() {
 
-	mkDir(Conf.Appsdir, os.ModePerm)
-
 	appsName := Conf.AppsName
 	if len(appsName) == 0 {
 		logln("Exit. Not found any applications name in configuration.", Conf.Image)
@@ -31,6 +30,8 @@ func main() {
 	}
 
 	if cmdInput == InputInit {
+		mkDir(Conf.Appsdir, os.ModePerm)
+
 		// Create container: docker create drupal:latest
 		logln("Execute: docker create", Conf.Image)
 		cmdcid := exec.Command("docker", "create", Conf.Image)
@@ -42,7 +43,7 @@ func main() {
 		imgworkdir := containerid + `:` + Conf.Workdir
 		for i := 0; i < len(appsName); i++ {
 			appName := appsName[i]
-			appDir := Conf.Appsdir + "/" + appName
+			appDir := filepath.Join(Conf.Appsdir, appName)
 			initProjectFiles(appName, appDir, imgworkdir)
 		}
 		logln("Execute: docker rm -f ", containerid)
@@ -50,10 +51,13 @@ func main() {
 			log.Fatal(err)
 		}
 	}
+	if cmdInput == InputRemove {
+		removeApps()
+	}
 
 	for i := 0; i < len(appsName); i++ {
 		appName := appsName[i]
-		appDir := Conf.Appsdir + "/" + appName
+		appDir := filepath.Join(Conf.Appsdir, appName)
 		switch cmdInput {
 		case InputUp:
 			startUpApps(appName, appDir)
@@ -87,6 +91,7 @@ func initProjectFiles(appName, appDir, imgworkdir string) {
 	// Create files directory
 	filesDir := appDir + "/drupal/web/sites/default/files"
 	mkDir(filesDir, os.ModePerm)
+	os.Chmod(filesDir, os.ModePerm)
 
 	logln("Execute: cp -rf ", tplCompose, appDir)
 	exec.Command("cp", "-rf", tplCompose, appDir+"/docker-compose.yml").Run()
@@ -101,4 +106,12 @@ func startUpApps(appName, appDir string) {
 func downApps(appName, appDir string) {
 	logln("Execute: docker-compose", "-f", appDir+"/docker-compose.yml", InputDown)
 	exec.Command("docker-compose", "-f", appDir+"/docker-compose.yml", InputDown).Run()
+}
+
+func removeApps() {
+	logln("Execute: RemoveAll ", Conf.Appsdir)
+	// Remove all the directories and files
+	if err := os.RemoveAll(Conf.Appsdir); err != nil {
+		log.Fatal(err)
+	}
 }
