@@ -10,11 +10,7 @@ services:
       - "${APP_PORT}:80"
     volumes:
       - ./drupal:/opt/drupal
-      - ./drupal/web/sites/default/files:/opt/drupal/web/sites/default/files:rw
-      # - /opt/drupal/web/sites/default/files/css
-      # - /opt/drupal/web/sites/default/files/js
-      # - /opt/drupal/web/sites/default/files/php
-      # - /opt/drupal/web/sites/default/files/styles
+      # - ./drupal/web/sites/default/files:/opt/drupal/web/sites/default/files:rw
   drupal_mariadb:
     image: mariadb:latest
     container_name: ${APP_NAME}_mariadb

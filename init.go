@@ -15,18 +15,17 @@ var (
 
 func defineCommand(d prompt.Document) []prompt.Suggest {
 	s := []prompt.Suggest{
-		{Text: InputInit, Description: "Initialize configuration by default."},
-		{Text: InputUp, Description: "Excute docker-compose to create and start containers."},
-		{Text: InputDown, Description: "Excute docker-compose down to stop and remove containers, networks"},
-		{Text: InputRemove, Description: "Remove all applications files"},
+		{Text: InputInit, Description: "Initialize the default configuration."},
+		{Text: InputUp, Description: "Create and start containers."},
+		{Text: InputDown, Description: "Stop and remove containers, networks."},
+		{Text: InputRemove, Description: "Remove all applications"},
 	}
 	return prompt.FilterHasPrefix(s, d.GetWordBeforeCursor(), true)
 }
 
 func initCommand() string {
-	fmt.Println("Please type you command: init, up or down.")
+	fmt.Println("Please type you command.")
 	t := prompt.Input("> ", defineCommand)
-	// fmt.Println("You selected " + t)
 	switch t {
 	case InputInit:
 		initConfigFile()
