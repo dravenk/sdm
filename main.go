@@ -30,32 +30,36 @@ func main() {
 		return
 	}
 
-	// Create container: docker create drupal:latest
-	logln("Execute: docker create", Conf.Image)
-	cmdcid := exec.Command("docker", "create", Conf.Image)
-	cid, err := cmdcid.CombinedOutput()
-	if err != nil {
-		log.Fatal(err)
+	if cmdInput == InputInit {
+		// Create container: docker create drupal:latest
+		logln("Execute: docker create", Conf.Image)
+		cmdcid := exec.Command("docker", "create", Conf.Image)
+		cid, err := cmdcid.CombinedOutput()
+		if err != nil {
+			log.Fatal(err)
+		}
+		containerid := strings.TrimSuffix(string(cid), "\n")
+		imgworkdir := containerid + `:` + Conf.Workdir
+		for i := 0; i < len(appsName); i++ {
+			appName := appsName[i]
+			appDir := Conf.Appsdir + "/" + appName
+			initProjectFiles(appName, appDir, imgworkdir)
+		}
+		logln("Execute: docker rm -f ", containerid)
+		if _, err = exec.Command("docker", "rm", "-f", containerid).CombinedOutput(); err != nil {
+			log.Fatal(err)
+		}
 	}
-	containerid := strings.TrimSuffix(string(cid), "\n")
-	imgworkdir := containerid + `:` + Conf.Workdir
 
 	for i := 0; i < len(appsName); i++ {
 		appName := appsName[i]
 		appDir := Conf.Appsdir + "/" + appName
-
 		switch cmdInput {
-		case InputInit:
-			initProjectFiles(appName, appDir, imgworkdir)
 		case InputUp:
-			startUpApps(appName, appDir, imgworkdir)
+			startUpApps(appName, appDir)
+		case InputDown:
+			downApps(appName, appDir)
 		}
-
-	}
-
-	logln("Execute: docker rm -f ", containerid)
-	if _, err = exec.Command("docker", "rm", "-f", containerid).CombinedOutput(); err != nil {
-		log.Fatal(err)
 	}
 
 	logln("----- Done ------")
@@ -89,7 +93,12 @@ func initProjectFiles(appName, appDir, imgworkdir string) {
 	writeFileln(appDir+"/.env", generateDockEnv(appName))
 }
 
-func startUpApps(appName, appDir, imgworkdir string) {
+func startUpApps(appName, appDir string) {
 	logln("Execute: docker-compose", "-f", appDir+"/docker-compose.yml", InputUp, "-d")
 	exec.Command("docker-compose", "-f", appDir+"/docker-compose.yml", InputUp, "-d").Run()
+}
+
+func downApps(appName, appDir string) {
+	logln("Execute: docker-compose", "-f", appDir+"/docker-compose.yml", InputDown)
+	exec.Command("docker-compose", "-f", appDir+"/docker-compose.yml", InputDown).Run()
 }
