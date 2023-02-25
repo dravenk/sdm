@@ -1,4 +1,4 @@
-module ddp
+module github.com/dravenk/ddp
 
 go 1.20
 
