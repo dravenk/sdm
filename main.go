@@ -18,7 +18,6 @@ var cmdInput string
 func init() {
 	cmdInput = initCommand()
 	loadConf()
-	logln("----- start ------")
 }
 
 func main() {
@@ -65,8 +64,6 @@ func main() {
 			downApps(appName, appDir)
 		}
 	}
-
-	logln("----- Done ------")
 }
 
 func initProjectFiles(appName, appDir, imgworkdir string) {
