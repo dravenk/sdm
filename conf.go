@@ -2,9 +2,10 @@ package main
 
 import (
 	_ "embed"
-	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
+
+	"gopkg.in/yaml.v3"
 	// "os"
 	// "errors"
 )
