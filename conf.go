@@ -2,12 +2,10 @@ package main
 
 import (
 	_ "embed"
-	"io/ioutil"
 	"log"
+	"os"
 
 	"gopkg.in/yaml.v3"
-	// "os"
-	// "errors"
 )
 
 // Config struct
@@ -39,11 +37,11 @@ var Conf Config
 
 func loadConf() {
 	var data []byte
-	filePath := "./config.yaml"
+	filePath := "./values.yaml"
 	if isNotExist(filePath) {
 		data = configfile
 	} else {
-		data, _ = ioutil.ReadFile("./config.yaml")
+		data, _ = os.ReadFile(filePath)
 	}
 
 	if err := yaml.Unmarshal([]byte(data), &Conf); err != nil {

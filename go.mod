@@ -1,4 +1,4 @@
-module github.com/dravenk/ddp
+module github.com/dravenk/sdm
 
 go 1.20
 

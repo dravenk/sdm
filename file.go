@@ -3,33 +3,31 @@ package main
 import (
 	_ "embed"
 	"errors"
-	"io/ioutil"
 	"log"
 	"net"
 	"os"
 	"strconv"
-	"time"
 )
 
-// see https://pkg.go.dev/embed
-//
-//go:embed default.config.yaml
+//go:embed default.values.yaml
 var configfile []byte
 
+var valuesFile = "values.yaml"
+
 func initConfigFile() {
-	filePath := "./config.yaml"
+	filePath := "./" + valuesFile
 	if isNotExist(filePath) {
-		ioutil.WriteFile(filePath, configfile, os.ModePerm)
+		os.WriteFile(filePath, configfile, os.ModePerm)
 	}
 }
 
-//go:embed default.docker-compose.yml
+//go:embed default.docker-compose.yaml
 var dockerComposeFile []byte
 
 func initDockerComposefile() {
-	filePath := "./docker-compose.yml"
+	filePath := "./docker-compose.yaml"
 	if isNotExist(filePath) {
-		ioutil.WriteFile(filePath, dockerComposeFile, os.ModePerm)
+		os.WriteFile(filePath, dockerComposeFile, os.ModePerm)
 	}
 }
 
@@ -39,7 +37,7 @@ var settingsFile []byte
 func initSettingsfile() {
 	filePath := "./settings.php"
 	if isNotExist(filePath) {
-		ioutil.WriteFile(filePath, settingsFile, os.ModePerm)
+		os.WriteFile(filePath, settingsFile, os.ModePerm)
 	}
 }
 
@@ -74,24 +72,22 @@ func mkDir(dir string, perm os.FileMode) {
 	}
 }
 
-func ScanPort(protocol string, hostname string, port int) bool {
+func availablePort(port int) bool {
 	p := strconv.Itoa(port)
-	addr := net.JoinHostPort(hostname, p)
-	conn, err := net.DialTimeout(protocol, addr, 2*time.Second)
+	ln, err := net.Listen("tcp", ":"+p)
 	if err != nil {
-		// logln(err)
+		logln(err)
 		return false
 	}
-	defer conn.Close()
-	return true
-}
 
-func portReady(port int) bool {
-	if !ScanPort("http", "localhost", port) && !ScanPort("https", "localhost", port) {
-		logln("Port available. ", port)
-		return true
+	if err = ln.Close(); err != nil {
+		logln(err)
+		return false
 	}
-	return false
+
+	// defer conn.Close()
+	logln("Port available. ", port)
+	return true
 }
 
 func isNotExist(filePath string) bool {
@@ -112,7 +108,7 @@ func generateDockEnv(appName string) []string {
 		`MARIADB_PASS=` + Conf.MySQL.password,
 	}
 	for i := Conf.Minport; i < Conf.Maxport; i++ {
-		if portReady(i) {
+		if availablePort(i) {
 			port = i
 			Conf.Minport = i + 1
 			portLn := `APP_PORT=` + strconv.Itoa(i)
@@ -127,15 +123,8 @@ func generateDockEnv(appName string) []string {
 }
 
 func generateSettings(appName string) []string {
-	// $databases['default']['default']['username'] = 'sqlusername';
-	// $databases['default']['default']['password'] = 'sqlpassword';
-	// $databases['default']['default']['host'] = 'localhost';
-	// $databases['default']['default']['port'] = '3306';
-	// $settings['hash_salt'] = '';
-	// $databases['default']['default']['database'] = '';
 	dbStr := `$databases['default']['default']`
 	dbUserStr := dbStr + `['username'] = '` + Conf.MySQL.User + `';`
-	// dbPassStr := dbStr + `['password'] = '` + Conf.MySQL.Pass + `';`
 	dbPassStr := dbStr + `['password'] = '` + Conf.MySQL.password + `';`
 	dbHostStr := dbStr + `['host'] = '` + Conf.MySQL.Host + `';`
 	portStr := strconv.Itoa(int(Conf.MySQL.Port))

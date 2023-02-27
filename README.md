@@ -1,4 +1,4 @@
-## DDP
+## SDM
 
-Deploy Dock Program.
+Software Deployment Manager
 

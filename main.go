@@ -10,7 +10,7 @@ import (
 
 var (
 	tplSettings = "settings.php"
-	tplCompose  = "docker-compose.yml"
+	tplCompose  = "docker-compose.yaml"
 )
 
 var cmdInput string
@@ -91,23 +91,22 @@ func initProjectFiles(appName, appDir, imgworkdir string) {
 	os.Chmod(filesDir, os.ModePerm)
 
 	logln("Execute: cp -rf ", tplCompose, appDir)
-	exec.Command("cp", "-rf", tplCompose, appDir+"/docker-compose.yml").Run()
+	exec.Command("cp", "-rf", tplCompose, appDir+"/"+tplCompose).Run()
 	writeFileln(appDir+"/.env", generateDockEnv(appName))
 }
 
 func startUpApps(appName, appDir string) {
-	logln("Execute: docker-compose", "-f", appDir+"/docker-compose.yml", InputUp, "-d")
-	exec.Command("docker-compose", "-f", appDir+"/docker-compose.yml", InputUp, "-d").Run()
+	logln("Execute: docker-compose", "-f", appDir+"/"+tplCompose, InputUp, "-d")
+	exec.Command("docker-compose", "-f", appDir+"/"+tplCompose, InputUp, "-d").Run()
 }
 
 func downApps(appName, appDir string) {
-	logln("Execute: docker-compose", "-f", appDir+"/docker-compose.yml", InputDown)
-	exec.Command("docker-compose", "-f", appDir+"/docker-compose.yml", InputDown).Run()
+	logln("Execute: docker-compose", "-f", appDir+"/"+tplCompose, InputDown)
+	exec.Command("docker-compose", "-f", appDir+"/"+tplCompose, InputDown).Run()
 }
 
 func removeApps() {
 	logln("Execute: RemoveAll ", Conf.Appsdir)
-	// Remove all the directories and files
 	if err := os.RemoveAll(Conf.Appsdir); err != nil {
 		log.Fatal(err)
 	}
