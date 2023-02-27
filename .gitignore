@@ -1,8 +1,9 @@
-ddp
-dockdp
 values.yaml
-apps
 settings.php
 docker-compose.yaml
 .env
+
 sdm
+vendor
+
+apps
