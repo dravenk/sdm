@@ -10,8 +10,9 @@ import (
 
 // Config struct
 type Config struct {
-	Image   string
-	Workdir string
+	Image       string
+	ContainerId string
+	Workdir     string
 
 	AppsName []string
 	Appsdir  string
@@ -37,7 +38,7 @@ var Conf Config
 
 func loadConf() {
 	var data []byte
-	filePath := "./values.yaml"
+	filePath := pathJoin("values.yaml")
 	if isNotExist(filePath) {
 		data = configfile
 	} else {

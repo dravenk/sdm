@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"path/filepath"
 	"strconv"
 )
 
@@ -15,7 +16,8 @@ var configfile []byte
 var valuesFile = "values.yaml"
 
 func initConfigFile() {
-	filePath := "./" + valuesFile
+	filePath := pathJoin(valuesFile)
+
 	if isNotExist(filePath) {
 		os.WriteFile(filePath, configfile, os.ModePerm)
 	}
@@ -25,7 +27,7 @@ func initConfigFile() {
 var dockerComposeFile []byte
 
 func initDockerComposefile() {
-	filePath := "./docker-compose.yaml"
+	filePath := pathJoin("docker-compose.yaml")
 	if isNotExist(filePath) {
 		os.WriteFile(filePath, dockerComposeFile, os.ModePerm)
 	}
@@ -35,7 +37,7 @@ func initDockerComposefile() {
 var settingsFile []byte
 
 func initSettingsfile() {
-	filePath := "./settings.php"
+	filePath := pathJoin("settings.php")
 	if isNotExist(filePath) {
 		os.WriteFile(filePath, settingsFile, os.ModePerm)
 	}
@@ -64,7 +66,7 @@ func mkDir(dir string, perm os.FileMode) {
 		return
 	}
 
-	logln("mkdir ", dir)
+	logln("Execute: MkdirAll ", dir)
 	if err := os.MkdirAll(dir, perm); err != nil {
 		if !errors.Is(err, os.ErrExist) {
 			log.Fatal(err)
@@ -85,8 +87,7 @@ func availablePort(port int) bool {
 		return false
 	}
 
-	// defer conn.Close()
-	logln("Port available. ", port)
+	logln("Available Port: ", port)
 	return true
 }
 
@@ -141,4 +142,8 @@ func generateSettings(appName string) []string {
 		dbNameStr,
 	}
 	return textSlice
+}
+
+func pathJoin(elem ...string) string {
+	return filepath.Join(elem...)
 }
