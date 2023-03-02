@@ -5,5 +5,6 @@ docker-compose.yaml
 .env
 
 sdm
+sdm_*
 vendor
 apps
