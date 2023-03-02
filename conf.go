@@ -20,7 +20,6 @@ type Config struct {
 	Log struct {
 		Level int8
 	}
-	Cmds []string
 
 	MySQL struct {
 		Host     string
@@ -36,9 +35,11 @@ type Config struct {
 // Conf convert config to Conf variable
 var Conf Config
 
+var valuesFile = "config.yaml"
+
 func loadConf() {
 	var data []byte
-	filePath := pathJoin("values.yaml")
+	filePath := pathJoin(valuesFile)
 	if isNotExist(filePath) {
 		data = configfile
 	} else {

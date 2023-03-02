@@ -8,8 +8,6 @@ mysql:
   user: root
 
 appsdir: apps
-
-appsname: [dp1, dp2]
-
+appsname: ["dp1","dp2"]
 minport: 8000
 maxport: 8800

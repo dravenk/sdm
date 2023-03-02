@@ -8,19 +8,20 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+
+	"gopkg.in/yaml.v3"
 )
 
-//go:embed default.values.yaml
+//go:embed default.config.yaml
 var configfile []byte
-
-var valuesFile = "values.yaml"
 
 func initConfigFile() {
 	filePath := pathJoin(valuesFile)
 
-	if isNotExist(filePath) {
-		os.WriteFile(filePath, configfile, os.ModePerm)
+	if !isNotExist(filePath) {
+		configfile, _ = yaml.Marshal(Conf)
 	}
+	os.WriteFile(filePath, configfile, os.ModePerm)
 }
 
 //go:embed default.docker-compose.yaml

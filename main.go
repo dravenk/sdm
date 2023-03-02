@@ -8,26 +8,13 @@ import (
 	"strings"
 )
 
-var (
-	tplSettings = "settings.php"
-	tplCompose  = "docker-compose.yaml"
-	appPath     = "drupal"
-)
-
-var cmdInput string
-
 func init() {
-	rootCmd.AddCommand(versionCmd)
-	rootCmd.AddCommand(initCmd)
-	rootCmd.AddCommand(upCmd)
-	rootCmd.AddCommand(downCmd)
-	rootCmd.AddCommand(removeCmd)
-
 	loadConf()
 }
 
 func main() {
-	rootCmd.Execute()
+	// cli
+	Execute()
 
 	appsName := Conf.AppsName
 	if len(appsName) == 0 {
@@ -58,9 +45,9 @@ func main() {
 			initProjectFiles(appName, appDir, imgworkdir)
 		}
 	}
-	if cmdInput == InputRemove {
-		removeApps()
-	}
+	// if cmdInput == InputRemove {
+	// 	removeApps()
+	// }
 
 	for i := 0; i < len(appsName); i++ {
 		appName := appsName[i]
