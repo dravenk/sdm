@@ -13,7 +13,7 @@ go install github.com/dravenk/sdm@latest
 
 Initialize the configuration file with custom parameters.
 ```shell
-sdm init --minport 8100 --maxport 8200 --dir ../apps --app=d1,d2,d3
+sdm init --minport 8100 --maxport 8200 --image dravenk/dp:10-fpm --dir ../apps --app=d1,d2,d3
 ```
 
 Create and start containers.

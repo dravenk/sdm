@@ -70,6 +70,11 @@ var initCmd = &cobra.Command{
 		if dir != "" {
 			Conf.Appsdir = dir
 		}
+		image, _ := cmd.Flags().GetString("image")
+		if image != "" {
+			Conf.Image = image
+		}
+
 		initConfigFile()
 	},
 }
@@ -109,6 +114,7 @@ func init() {
 	downCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/config.yaml)")
 	initCmd.PersistentFlags().StringSliceP("app", "a", []string{"dp1", "dp2"}, "All the applications name.")
 	initCmd.PersistentFlags().String("dir", "apps", "The directory where you store your projects.")
+	initCmd.PersistentFlags().String("image", "dravenk/dp:10-fpm", "The directory where you store your projects.")
 	initCmd.PersistentFlags().Int("minport", 8000, "The minimum port can be use.")
 	initCmd.PersistentFlags().Int("maxport", 9000, "The maximum port can be use.")
 
