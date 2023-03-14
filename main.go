@@ -79,7 +79,6 @@ func initProjectFiles(wg *sync.WaitGroup, appName, appDir, imgworkdir string) {
 	defer wg.Done()
 
 	mkDir(appDir, os.ModePerm)
-	// generage db password for every app
 	Conf.MySQL.password = hashPass()
 	appDirPath := filepath.Join(appDir,filepath.Base(Conf.Workdir))
 	
