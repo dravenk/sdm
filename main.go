@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 )
 
 func init() {
@@ -38,12 +39,16 @@ func main() {
 
 		defer removeContainer(containerid)
 
+		wg := new(sync.WaitGroup)
+		wg.Add(len(appsName))
+
 		imgworkdir := containerid + `:` + Conf.Workdir
 		for i := 0; i < len(appsName); i++ {
 			appName := appsName[i]
 			appDir := filepath.Join(Conf.Appsdir, appName)
-			initProjectFiles(appName, appDir, imgworkdir)
+			go initProjectFiles(wg, appName, appDir, imgworkdir)
 		}
+		wg.Wait()
 	}
 	// if cmdInput == InputRemove {
 	// 	removeApps()
@@ -70,10 +75,17 @@ func removeContainer(containerid string) bool {
 	return true
 }
 
-func initProjectFiles(appName, appDir, imgworkdir string) {
+func initProjectFiles(wg *sync.WaitGroup, appName, appDir, imgworkdir string) {
+	defer wg.Done()
+
 	mkDir(appDir, os.ModePerm)
 	// generage db password for every app
 	Conf.MySQL.password = hashPass()
+	appDirPath := filepath.Join(appDir,filepath.Base(Conf.Workdir))
+	
+	if !isNotExist(appDirPath) {
+		return
+	}
 
 	logln("Execute: docker cp", imgworkdir, appDir)
 	cmdcp := exec.Command("docker", "cp", imgworkdir, appDir)
