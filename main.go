@@ -95,8 +95,9 @@ func initProjectFiles(wg *sync.WaitGroup, appName, appDir, imgworkdir string) {
 
 	// Writing settings.php
 	dstName := pathJoin(appDir, appPath, "web/sites/default/settings.php")
-	logln("Execute: cp -rf ", tplSettings, dstName)
-	exec.Command("cp", "-rf", tplSettings, dstName).Run()
+	srcName := pathJoin(projectPath, tplSettings)
+	logln("Execute: cp -rf ", projectPath, dstName)
+	exec.Command("cp", "-rf", srcName , dstName).Run()
 
 	logln("Write to file: ", dstName)
 	writeFileln(dstName, generateSettings(appName))
@@ -106,19 +107,22 @@ func initProjectFiles(wg *sync.WaitGroup, appName, appDir, imgworkdir string) {
 	mkDir(filesDir, os.ModePerm)
 	os.Chmod(filesDir, os.ModePerm)
 
-	logln("Execute: cp -rf ", tplCompose, appDir)
-	exec.Command("cp", "-rf", tplCompose, pathJoin(appDir, tplCompose)).Run()
+	srcName = pathJoin(projectPath, tplCompose)
+	logln("Execute: cp -rf ", srcName, appDir)
+	exec.Command("cp", "-rf", srcName, pathJoin(appDir, tplCompose)).Run()
 	writeFileln(pathJoin(appDir, ".env"), generateDockEnv(appName))
 }
 
 func startUpApps(appName, appDir string) {
-	logln("Execute: docker-compose", "-f", pathJoin(appDir, tplCompose), InputUp, "-d")
-	exec.Command("docker-compose", "-f", pathJoin(appDir, tplCompose), InputUp, "-d").Run()
+	srcName :=  pathJoin(appDir, tplCompose)
+	logln("Execute: docker-compose", "-f",srcName, InputUp, "-d")
+	exec.Command("docker-compose", "-f", srcName, InputUp, "-d").Run()
 }
 
 func downApps(appName, appDir string) {
-	logln("Execute: docker-compose", "-f", pathJoin(appDir, tplCompose), InputDown)
-	exec.Command("docker-compose", "-f", pathJoin(appDir, tplCompose), InputDown).Run()
+	srcName :=  pathJoin(appDir, tplCompose)
+	logln("Execute: docker-compose", "-f",srcName, InputDown)
+	exec.Command("docker-compose", "-f", srcName, InputDown).Run()
 }
 
 func removeApps() {

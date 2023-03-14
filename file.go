@@ -12,7 +12,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-//go:embed default.config.yaml
+//go:embed projects/drupal/default.config.yaml
 var configfile []byte
 
 func initConfigFile() {
@@ -24,21 +24,21 @@ func initConfigFile() {
 	os.WriteFile(filePath, configfile, os.ModePerm)
 }
 
-//go:embed default.docker-compose.yaml
+//go:embed projects/drupal/default.docker-compose.yaml
 var dockerComposeFile []byte
 
 func initDockerComposefile() {
-	filePath := pathJoin("docker-compose.yaml")
+	filePath := pathJoin(projectPath, tplCompose)
 	if isNotExist(filePath) {
 		os.WriteFile(filePath, dockerComposeFile, os.ModePerm)
 	}
 }
 
-//go:embed default.settings.php
+//go:embed projects/drupal/default.settings.php
 var settingsFile []byte
 
 func initSettingsfile() {
-	filePath := pathJoin("settings.php")
+	filePath := pathJoin(projectPath, tplSettings)
 	if isNotExist(filePath) {
 		os.WriteFile(filePath, settingsFile, os.ModePerm)
 	}

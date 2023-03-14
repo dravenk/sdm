@@ -1,6 +1,7 @@
 package main
 
 var (
+	projectPath = "projects/drupal"
 	tplSettings = "settings.php"
 	tplCompose  = "docker-compose.yaml"
 	appPath     = "drupal"
